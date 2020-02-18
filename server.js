@@ -17,42 +17,45 @@ const handle = app.getRequestHandler();
   server.use(nextI18NextMiddleware(nextI18next))
 
 
-  //  rotues with language query params for the page
+  //  Custom Routes for the salary application
 
-  // server.get("/:lang", (req, res) => {
-  //   const actualPage = "/";
-  //   const queryParams = { lang: req.params.lang };
-  //   app.render(req, res, actualPage, queryParams);
-  // })
+  server.get("/", (req, res) => {
+    const actualPage = "/";
+    app.render(req, res, actualPage);
+  })
 
 
-  // server.get("/:lang/salary", (req, res) => {
-  //   const actualPage = "/salary";
-  //   const queryParams = { lang: req.params.lang };
-  //   app.render(req, res, actualPage, queryParams);
-  // })
+  server.get("/salary/:position/", (req, res) => {
+    const actualPage = "/salary";
+    const queryParams = { lang: req.params.lang, position: req.params.position };
+    app.render(req, res, actualPage, queryParams);
+  })
 
   server.get("/salary/:position/:location", (req, res) => {
     const actualPage = "/salary";
     const queryParams = { lang: req.params.lang, position: req.params.position, location: req.params.location };
+
+    //  some data we might need to use to do the checking of the routes to render the app at first time
+    console.log('original Url :: ', req.headers.host);
+    console.log('original Url :: ', req.originalUrl);
+    console.log('base url :: ', req.baseUrl);
+    console.log('query :: ', req.query);
+    console.log('params :: ', req.params);
+    console.log('query params :: ', req.queryParams);
+
+    console.log('path :: ', req._parsedUrl.path);
+    console.log('path name :: ', req._parsedUrl.pathname);
+    console.log('href :: ', req._parsedUrl.href);
+
+
+
     app.render(req, res, actualPage, queryParams);
   })
 
 
-  // server.get('/:lang/second-page', (req, res) => {
-  //   const actualPage = "/second-page";
-  //   const queryParams = { lang: req.params.lang };
-  //   app.render(req, res, actualPage, queryParams)
-  // });
-
-
   server.get('*', (req, res) => {
-    // console.log('url :: ', req.headers.host);
     handle(req, res)
   });
-
-
-
 
   await server.listen(port)
   console.log(`> Ready on http://localhost:${port}`) // eslint-disable-line no-console
